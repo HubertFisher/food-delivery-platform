@@ -41,6 +41,7 @@
 
     <modules>
         <module>common-grpc</module>
+        <module>catalog-service</module>
     </modules>
 
     <dependencyManagement>
