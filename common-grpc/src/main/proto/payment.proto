@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package kz.alitulegenov.common.grpc.payment;
+
+option java_multiple_files = true;
+option java_package = "kz.alitulegenov.common.grpc.payment";
+option java_outer_classname = "PaymentProto";
+
+// Synchronous gRPC contract exposed by payment-service for order payment processing and Saga compensation
+service PaymentGrpcService {
+  // Authorizes and captures payment for an order
+  rpc ProcessPayment (ProcessPaymentRequest) returns (ProcessPaymentResponse);
+
+  // Refunds a previously captured payment (Saga compensating action)
+  rpc RefundPayment (RefundPaymentRequest) returns (RefundPaymentResponse);
+}
+
+message ProcessPaymentRequest {
+  string order_id = 1;
+  string customer_id = 2;
+  string amount = 3; // Decimal string representation (e.g. "45.99")
+  string currency = 4;
+  string payment_method_id = 5;
+  string idempotency_key = 6;
+}
+
+message ProcessPaymentResponse {
+  bool success = 1;
+  string payment_id = 2;
+  PaymentStatus status = 3;
+  string failure_reason = 4;
+}
+
+message RefundPaymentRequest {
+  string payment_id = 1;
+  string order_id = 2;
+  string reason = 3;
+}
+
+message RefundPaymentResponse {
+  bool success = 1;
+  PaymentStatus status = 2;
+  string failure_reason = 3;
+}
+
+enum PaymentStatus {
+  PAYMENT_STATUS_UNSPECIFIED = 0;
+  PAYMENT_STATUS_COMPLETED = 1;
+  PAYMENT_STATUS_FAILED = 2;
+  PAYMENT_STATUS_REFUNDED = 3;
+}

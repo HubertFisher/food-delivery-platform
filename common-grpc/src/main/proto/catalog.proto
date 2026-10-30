@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package kz.alitulegenov.common.grpc.catalog;
+
+option java_multiple_files = true;
+option java_package = "kz.alitulegenov.common.grpc.catalog";
+option java_outer_classname = "CatalogProto";
+
+// Synchronous gRPC contract exposed by catalog-service for internal microservices
+service CatalogGrpcService {
+  // Validates restaurant status, menu item availability, and returns authoritative pricing
+  rpc ValidateOrderItems (ValidateOrderItemsRequest) returns (ValidateOrderItemsResponse);
+}
+
+message ValidateOrderItemsRequest {
+  string restaurant_id = 1;
+  repeated OrderItemRequest items = 2;
+}
+
+message OrderItemRequest {
+  string menu_item_id = 1;
+  int32 quantity = 2;
+}
+
+message ValidateOrderItemsResponse {
+  bool valid = 1;
+  string restaurant_name = 2;
+  string failure_reason = 3;
+  repeated ValidatedMenuItem validated_items = 4;
+}
+
+message ValidatedMenuItem {
+  string menu_item_id = 1;
+  string name = 2;
+  string unit_price = 3; // Decimal string representation (e.g. "12.50") to avoid floating-point precision loss
+  int32 quantity = 4;
+  bool available = 5;
+}
