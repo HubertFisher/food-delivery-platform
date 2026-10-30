@@ -63,7 +63,33 @@ Real-time food delivery microservices platform (inspired by UberEats / DoorDash)
 - **JDK 21**
 - **Docker** and **Docker Compose**
 
-### Build the Project
+### 1. Launch Infrastructure
+
+Create your local `.env` file from `.env.example`:
+```bash
+cp .env.example .env
+```
+
+Start core infrastructure backing services (PostgreSQL, MongoDB, Redis, RabbitMQ):
+```bash
+docker compose up -d
+```
+
+To include Apache Kafka & Kafka UI (for courier streaming):
+```bash
+docker compose --profile streaming up -d
+```
+
+Or launch all containers at once:
+```bash
+docker compose --profile all up -d
+```
+
+#### Web Consoles
+- **RabbitMQ UI**: [http://localhost:15672](http://localhost:15672) (login: `guest` / `guest`)
+- **Kafka UI**: [http://localhost:8085](http://localhost:8085)
+
+### 2. Build the Project
 ```bash
 ./mvnw clean install
 ```
